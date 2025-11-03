@@ -8,6 +8,13 @@ services:
     environment:
       - JAEGER_AGENT_HOST=jaeger
       - JAEGER_AGENT_PORT=6831
+    healthcheck:
+      # https://docs.docker.com/reference/compose-file/services/#healthcheck
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthcheck"]
+      interval: 5s
+      timeout: 2s
+      retries: 5
+      start_period: 15s
 
   prometheus:
     image: prom/prometheus:latest
@@ -21,6 +28,9 @@ services:
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
+    depends_on:
+      app:
+        condition: service_healthy
 
   grafana:
     image: grafana/grafana:latest
@@ -53,4 +63,4 @@ services:
 
 volumes:
   prometheus_data:
-  grafana_data: 
+  grafana_data:
