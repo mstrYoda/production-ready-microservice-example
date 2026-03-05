@@ -98,7 +98,7 @@ docker build -t product-service .
 ### Running Tests
 
 ```bash
-go test ./...
+go test ./test/...
 ```
 
 ## Observability
